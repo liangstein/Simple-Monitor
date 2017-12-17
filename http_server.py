@@ -42,7 +42,7 @@ def index():
                 lost_nodes.append(i)
             else:
                 if node_time[-2]!=now_time[-2]:
-                    if abs(node_time[-1]-now_time[-1])<=60:
+                    if abs(node_time[-1]+60*node_time[-2]-now_time[-1]-60*now_time[-2])<=60:
                         pass
                     else:
                         lost_nodes.append(i)
