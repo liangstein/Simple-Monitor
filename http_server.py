@@ -16,14 +16,7 @@ def index():
     hosts = os.listdir(main_dir + "/hosts_data/")
     normal_states_string = ""
     caution_states_string=""
-    now=datetime.now()
-    year=now.year
-    month=now.month
-    day=now.day
-    hour=now.hour
-    minute=now.minute
-    second=now.second
-    now_time=str(year) + str(month) + str(day) + str(hour) + str(minute) + str(second)
+    node_times={}
     lost_nodes=[]
     gpu_warning_location = {}
     for host in hosts:
@@ -37,12 +30,22 @@ def index():
                 gpu_temp=gpu_states[i][-1]
                 if gpu_temp>65:
                     gpu_warning_list.append((str(i),str(gpu_states[i])))
-        node_time=gpu_states["time"]
-        if abs(float(node_time)-float(now_time))>200:
-            lost_nodes.append(host)
+        node_times[host]=gpu_states["time"]
         if len(gpu_warning_list)!=0:
             gpu_warning_location[host]=gpu_warning_list
         normal_states_string+="\n"
+    now_time=node_times["discovery"]
+    for i in node_times:
+        if i!="discovery":
+            node_time=node_times[i]
+            if node_time[:-2]!=now_time[:-2]:
+                lost_nodes.append(i)
+            else:
+                if node_time[-2]!=now_time[-2]:
+                    if abs(node_time[-1]-now_time[-1])<=60:
+                        pass
+                    else:
+                        lost_nodes.append(i)
     if len(gpu_warning_location)!=0:
         caution_states_string+="Caution! Following GPUs are too hot:\n"
         for i in gpu_warning_location:

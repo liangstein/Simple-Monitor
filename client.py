@@ -30,7 +30,7 @@ def client_monitor():
                 repeat_count+=1
         else:
             gpu_information[ele[0]] = (float(ele[-2].replace("W", "")), float(ele[-1]))
-    gpu_information["time"]=str(year)+str(month)+str(day)+str(hour)+str(minute)+str(second)
+    gpu_information["time"]=[year,month,day,hour,minute,second]
     return hostname,gpu_information
 
 def client_main(dir):
